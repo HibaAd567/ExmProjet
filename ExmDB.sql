@@ -121,4 +121,3 @@ CREATE TABLE notifications (
 );
 
 
-show tables;
