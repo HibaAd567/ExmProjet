@@ -1,0 +1,49 @@
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+h3 {
+    margin-top: 15px;
+    color: rgb(72, 9, 130);
+   
+}
+
+h1 {
+    font-size: 25px;
+    margin-top: 20px;
+   
+}
+
+/* Centrer uniquement le formulaire */
+.form-container,p,button {
+    display: flex;
+    justify-content: center; /* centre horizontalement */
+    margin-top: 40px;        /* espace depuis le header */
+}
+
+/* Formulaire en colonne */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;       /* espace entre les champs */
+}
+
+/* Champs uniformes */
+.form input {
+    padding: 8px;
+    width: 250px;
+    border-radius:10px ;
+    border-color: rgb(89, 89, 205);
+}
+
+button{
+      width: 100%;
+      padding: 10px;
+      background-color: #4da6ac;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 4px;
+}
