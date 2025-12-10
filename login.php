@@ -10,7 +10,7 @@
     <div class="header">
         
         <div class="logo">
-            <img src="logo2.png" alt="Mon logo" height="90px">
+            <img src="logo.jpg" alt="Mon logo" height="90px">
             <h3>Academia Flow</h3>
         </div>
     </div>
