@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Academia Flow</title>
     <link href="login.css" rel="stylesheet">
 </head>
 <body>
     <div class="header">
-        
         <div class="logo">
             <img src="logo.jpg" alt="Mon logo" height="90px">
             <h3>Academia Flow</h3>

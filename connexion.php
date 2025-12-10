@@ -4,7 +4,7 @@ $user = "hebaad";
 $pass = "root123/";
 $dbname = "hebaad_db";
 
-$dsn ="mysql: host= $host;dbname=$dbname;charset=utf8mb4";
+$dsn ="mysql:host=$host;dbname=$dbname;charset=utf8mb4";
 
 try {
     $pdo = new PDO($dsn, $user, $pass);
