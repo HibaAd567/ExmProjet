@@ -1,7 +1,7 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
+$host = "mysql-hebaad.alwaysdata.net";
+$user = "hebaad";
+$pass = "root123/";
 $dbname = "hebaad_db";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
