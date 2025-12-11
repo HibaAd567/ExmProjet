@@ -6,7 +6,7 @@
     if(isset($_POST['email']) && isset($_POST['password'])) {
         if($_POST['email'] === "AliAhmed@academia.com" && $_POST['password'] === "ali123/") {
             $_SESSION['logged'] = true;
-            header("Location: dashboard.php");
+            header("Location: directeur/dashboard.php");
             exit;
         } else {
             echo "Invalid email or password";
