@@ -23,8 +23,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academia Flow</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous"><link href="loginn.css" rel="stylesheet">
+    <style>
+        .nav {
+            display: flex;             /* make ul a flex container */
+            align-items: center;      /* vertically center children */
+            gap: 10px;                /* optional space between items */
+        }
+
+        h3 {
+            color: rgb(72, 9, 130);
+        }
+
+        button {
+            background-color: #4da6ac;
+            color: white;
+            border: none;
+            height: 38px;
+        }
+
+        input.form-control {
+            border: 1px solid rgb(89, 89, 205);
+        }
+
+
+    </style>
 </head>
 <body>
+    <!-- Nav -->
     <div class="navbar">
         <div class="container-fluid">
             <ul class="nav">
@@ -38,20 +63,26 @@
         </div>
     </div>
 
-    <div class="form-container ">
-        <form class="form shadow-lg rounded-4 p-5" method="POST">
-            <p class="mt-3 ">Start your journey</p>
-            <h1 class="mt-3 " >Sign Up to Academia Flow</h1>
-            <label class="form-label " for="mail">Email:</label>
-            <input class="form-control w-100 " type="text" id="email" name="email" placeholder="example@gmail.com">
+    <!-- Form -->
+    <div class="form-container d-flex justify-content-center align-items-center mt-4">
+        <form class="form-box shadow-lg rounded-4 p-5" method="POST">
+            <p class="mt-3 text-center">Start your journey</p>
+            <h2 class=" text-center" >Sign Up to Academia Flow</h2>
 
-            <label class="form-label" for="password">Password:</label>
-            <input class="form-control w-100" type="password" id="password" name="password">
-
-           <button type="submit" value="envoyer">Se connecter</button>
-
+            <div class="mb-3 ">
+                <label for="email" class="form-label mt-3">Email address</label>
+                <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="example@gmail.com" required >
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label mt-3">Password</label>
+                <input type="password" class="form-control form-control-lg" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="mt-4 rounded w-100 ">Se Connecter</button>
+            
         </form>
     </div>
-</body>
 
+
+</body>
 </html>
