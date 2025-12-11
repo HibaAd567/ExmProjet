@@ -120,7 +120,7 @@
             </div>
             <!--CARD 2-->
             <div class="col-3">
-                <div class="card shadow-sm rounded-5 border-opacity-50 border-success p-3 ">
+                <div class="card shadow-sm rounded-5 border-opacity-50 border-primary p-3 ">
                     <div class="card-body text-center">
                         <h4 class="text-center mt-3">Modules non deposes</h4>
                         <p class="text-center fs-3 mb-3 text-success">15</p>
@@ -129,7 +129,7 @@
             </div>
             <!--CARD 3-->
             <div class="col-3">
-                <div class="card shadow-sm  rounded-5 border-opacity-50 border-success pt-1">
+                <div class="card shadow-sm  rounded-5 border-opacity-50 border-warning pt-1">
                     <div class="card-body text-center">
                         <h4 class="text-center mt-3">Modules deposes en attente de Verification</h4>
                         <p class="text-center fs-3 mb-3 text-success">11</p>
@@ -138,7 +138,7 @@
             </div>
             <!--CARD 4-->
             <div class="col-3">
-                <div class="card shadow-sm rounded-5 border-opacity-50 border-success p-3 ">
+                <div class="card shadow-sm rounded-5 border-opacity-50 border-danger p-3 ">
                     <div class="card-body text-center">
                         <h4 class="text-center mt-3">Modules non Conformes</h4>
                         <p class="text-center fs-3 mb-3 text-success">5</p>
