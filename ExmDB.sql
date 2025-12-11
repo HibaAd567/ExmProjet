@@ -11,6 +11,8 @@ CREATE TABLE utilisateurs (
     actif BOOLEAN NOT NULL DEFAULT TRUE
 );
 
+
+
 CREATE TABLE filieres (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code_filiere VARCHAR(50) NOT NULL UNIQUE,
@@ -121,3 +123,5 @@ CREATE TABLE notifications (
 );
 
 
+insert into utilisateurs (id, nom, prenom, email, mot_de_passe_hash, role, actif) values 
+(1,'Ali','Ahmed','AliAhmed@academia.com','ali123/','DIRECTEUR',true);
