@@ -7,7 +7,7 @@ CREATE TABLE utilisateurs (
     prenom VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     mot_de_passe_hash VARCHAR(255) NOT NULL,
-    role ENUM('DIRECTEUR', 'FORMATEUR', 'ADMIN') NOT NULL,
+    role ENUM('DIRECTEUR', 'FORMATEUR_RESPONSABLE', 'FORMATEUR_VERIFICATEUR') NOT NULL,
     actif BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -125,3 +125,10 @@ CREATE TABLE notifications (
 
 insert into utilisateurs (id, nom, prenom, email, mot_de_passe_hash, role, actif) values 
 (1,'Ali','Ahmed','AliAhmed@academia.com','ali123/','DIRECTEUR',true);
+
+
+
+insert into utilisateurs (id, nom, prenom, email, mot_de_passe_hash, role, actif) values 
+(2,'Sarah','Anderson','formateur1@academia.com','form123/','FORMATEUR_RESPONSABLE',true);
+
+
