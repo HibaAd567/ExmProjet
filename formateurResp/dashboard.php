@@ -2,18 +2,28 @@
 include '../connexion.php';
 session_start();
 
-if(!isset($_SESSION['logged']) || $_SESSION['role'] !== 'FORMATEUR_RESPONSABLE') {
+if(!isset($_SESSION['logged']) || $_SESSION['role'] !== 'FORMATEUR') {
     header("Location: ../login.php");
     exit;
 }
 
+$email = $_SESSION['email'];
 
-$stmt = $pdo->prepare("SELECT nom, prenom FROM utilisateurs WHERE email = ?");
-$stmt->execute([$_SESSION['email']]);
-$user = $stmt->fetch();
-$nom = $user['nom'];
-$prenom = $user['prenom'];
+$stmt = $pdo->prepare("SELECT nom, prenom FROM utilisateurs WHERE email = :email");
+$stmt->execute(['email' => $email]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($user) {
+    $nom = $user['nom'];
+    $prenom = $user['prenom'];
+} else {
+    $nom = 'Utilisateur';
+    $prenom = '';
+}
 ?>
+
+
+
 
 
 <!DOCTYPE html>
@@ -25,24 +35,79 @@ $prenom = $user['prenom'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous"><link href="loginn.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        h1{
-            text-align:center;
-            color:red;
+        h1 {
+        color: #0c0c0dff; 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 30px; 
+        text-transform: capitalize; 
+}
+
+        h3{
+            font-size:25px;
+            color: rgba(71, 10, 128, 1);
 
         }
+
+   
     </style>
 </head>
 <body>
 
-    <div class="navbar navbar-expand-lg p-3">
-        <div class="container-fluid">
+    <div class="d-flex align-items-center gap-3">
+        <img class="mt-1" src="../logo.jpg" alt="Mon logo" height="85px">
+        <h3>Academia Flow</h3>
+    </div>
+    <br>
 
-            <div class="d-flex align-items-center gap-3">
-                <img class="mt-1" src="../logo.jpg" alt="Mon logo" height="90px">
-                <h3 class="mt-2">Academia Flow</h3>
-            </div>
+    <h1>Gestion des modules</h1><br><br>
+    <div class="row p-4 mt-4">
 
-    <h1>Tableau des modules</h1>
+        <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th>Module</th>
+                    <th>Groupe</th>
+                    <th>Statut du paquet</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                <tr>
+                    <td>HTML/CSS</td>
+                    <td>Groupe A</td>
+                    <td><span class="badge bg-danger text-dark">Non déposé</span></td>
+                    <td> <button type="button" class="btn btn-secondary btn-sm">Déposer</button></td>
+                </tr>
+                <tr>
+                    <td>Bases de donees</td>
+                    <td>Groupe B</td>
+                    <td><span class="badge bg-warning text-dark">En attente</span></td>
+                    <td><button type="button" class="btn btn-secondary btn-sm">Voir/Corriger</button></td>
+                </tr>
+                <tr>
+                    <td>JavaScript</td>
+                    <td>Groupe A</td>
+                    <td><span class="badge bg-primary text-dark">Anomalies</span></td>
+                    <td><button type="button" class="btn btn-secondary btn-sm">Voir/Corriger</button></td>
+                </tr>
+                <tr>
+                    <td>PHP/MySql</td>
+                    <td>Groupe C</td>
+                    <td><span class="badge bg-success text-dark">Validé</span></td>
+                    <td><button type="button" class="btn btn-secondary btn-sm">Voir</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        </div>
+    </div>        
+
+    
+
+    
 
     
 </body>
