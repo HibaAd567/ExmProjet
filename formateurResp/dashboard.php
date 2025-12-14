@@ -2,7 +2,7 @@
 include '../connexion.php';
 session_start();
 
-if(!isset($_SESSION['logged']) || $_SESSION['role'] !== 'FORMATEUR') {
+if(!isset($_SESSION['logged']) || $_SESSION['role'] !== 'FORMATEUR_RESPONSABLE') {
     header("Location: ../login.php");
     exit;
 }
