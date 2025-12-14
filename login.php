@@ -1,19 +1,30 @@
-<?php 
-    include 'connexion.php';
-    
-    session_start();
+<?php
+include 'connexion.php';
+session_start();
 
-    if(isset($_POST['email']) && isset($_POST['password'])) {
-        if($_POST['email'] === "AliAhmed@academia.com" && $_POST['password'] === "ali123/") {
-            $_SESSION['logged'] = true;
-            header("Location: directeur/dashboard.php");
-            exit;
-        } else {
-            echo "Invalid email or password";
-        }
+if(isset($_POST['email']) && isset($_POST['password'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    if($email === "AliAhmed@academia.com" && $password === "ali123/") {
+        $_SESSION['logged'] = true;
+        $_SESSION['role'] = 'DIRECTEUR';
+        $_SESSION['email'] = $email;
+        header("Location: directeur/dashboard.php");
+        exit;
+    } elseif($email === "formateur1@academia.com" && $password === "form123/") {
+        $_SESSION['logged'] = true;
+        $_SESSION['role'] = 'FORMATEUR_RESPONSABLE';
+        $_SESSION['email'] = $email;
+        header("Location: formateurResp/dashboard.php");
+        exit;
+    } else {
+        $error = "Email ou mot de passe incorrect";
     }
-    
+}
 ?>
+
+
 
 
 <!DOCTYPE html>

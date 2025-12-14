@@ -128,8 +128,12 @@ insert into utilisateurs (id, nom, prenom, email, mot_de_passe_hash, role, actif
 (1,'Ali','Ahmed','AliAhmed@academia.com','ali123/','DIRECTEUR',true);
 
 
+
+
+
 insert into utilisateurs (id, nom, prenom, email, mot_de_passe_hash, role, actif) values 
 (2,'Sarah','Anderson','formateur1@academia.com','form123/','FORMATEUR_RESPONSABLE',true);
+
 
 
 select * from utilisateurs;
