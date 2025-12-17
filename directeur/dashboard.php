@@ -35,11 +35,12 @@
             color: rgb(72, 9, 130);
         }
 
-        div div ul li a i {
+        div div ul li i {
             color: rgb(72, 9, 130);
+            cursor: pointer;
         }
 
-        div div ul li a i:hover{
+        div div ul li i:hover{
             color: lightblue;
         }
 
@@ -49,6 +50,37 @@
 
         button {
             width: 160px;
+        }
+
+        .dashboard-w {
+            display: flex;
+            width: 100%;
+            transition: all 0.4s ease;
+        }
+
+        .main-content {
+            width: 100%;
+            transition: width 0.4s ease;
+        }
+
+        .notifications-panel {
+            width: 0;
+            overflow: hidden;
+            background: rgba(253, 81, 81, 1);
+            padding: 0px;
+            margin: 20px;
+            transition: width 0.4s ease, padding 0.4 ease;
+            border-radiUs: 60px;
+            color: rgba(243, 214, 214, 1);
+        }
+
+        .dashboard-w.show-notifications .main-content {
+            width: 70%;
+        }
+
+        .dashboard-w.show-notifications .notifications-panel {
+            width: 30%;
+            padding: 20px;
         }
 
 
@@ -67,9 +99,8 @@
             <!-- right side -->
             <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
                 <li class="nav-item"> 
-                    <a class="nav-link position-relative" href="#" > 
-                        <i class="fa-solid fa-bell fa-xl"></i> 
-                    </a> 
+                    <!-- notification bell -->
+                    <i id="bell" class="fa-solid fa-bell fa-xl"></i> 
                 </li>
                 <li class="nav-item"> 
                     <div class="name">
@@ -106,104 +137,135 @@
         </li>
     </ul>
 
-    <!--CARDS -->
-    <div class="container-fluid p-4 mt-4">
-        <div class="row text-center">
-            <!--CARD 1-->
-            <div class="col-3">
-                <div class="card shadow-sm rounded-5 border-opacity-50 border-success p-3 ">
-                    <div class="card-body text-center">
-                        <h4 class="text-center mt-3">Modules Valides</h4>
-                        <p class="text-center fs-3 mb-3 text-success">9</p>
+    <div id="dashboard" class="dashboard-w">
+        <div class="main-content">
+        
+            <!--CARDS -->
+            <div class="container-fluid p-4 mt-4">
+                <div class="row text-center">
+                    <!--CARD 1-->
+                    <div class="col-3">
+                        <div class="card shadow-sm rounded-5 border-opacity-50 border-success p-3 ">
+                            <div class="card-body text-center">
+                                <h4 class="text-center mt-3">Modules Valides</h4>
+                                <p class="text-center fs-3 mb-3 text-success">9</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--CARD 2-->
+                    <div class="col-3">
+                        <div class="card shadow-sm rounded-5 border-opacity-50 border-primary p-3 ">
+                            <div class="card-body text-center">
+                                <h4 class="text-center mt-3">Modules non deposes</h4>
+                                <p class="text-center fs-3 mb-3 text-success">15</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--CARD 3-->
+                    <div class="col-3">
+                        <div class="card shadow-sm  rounded-5 border-opacity-50 border-warning pt-1">
+                            <div class="card-body text-center">
+                                <h4 class="text-center mt-3">Modules deposes en attente de Verification</h4>
+                                <p class="text-center fs-3 mb-3 text-success">11</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--CARD 4-->
+                    <div class="col-3">
+                        <div class="card shadow-sm rounded-5 border-opacity-50 border-danger p-3 ">
+                            <div class="card-body text-center">
+                                <h4 class="text-center mt-3">Modules non Conformes</h4>
+                                <p class="text-center fs-3 mb-3 text-success">5</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!--CARD 2-->
-            <div class="col-3">
-                <div class="card shadow-sm rounded-5 border-opacity-50 border-primary p-3 ">
-                    <div class="card-body text-center">
-                        <h4 class="text-center mt-3">Modules non deposes</h4>
-                        <p class="text-center fs-3 mb-3 text-success">15</p>
-                    </div>
+            
+
+            <!--TABLE -->
+            <div class="row p-4 mt-4">
+                <div class="col-12 border shadow-sm rounded-4  p-3"> 
+                <h3 class="pb-3">Affectation recentes</h3>
+                <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>Filiere</th>
+                            <th>Module</th>
+                            <th>Groupe</th>
+                            <th>Formateur Responsable</th>
+                            <th>Formateur Verificateur</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        <tr>
+                            <td>DEV</td>
+                            <td>HTML</td>
+                            <td>101</td>
+                            <td>Ahmed</td>
+                            <td>Bob</td>
+                            <td><span class="badge bg-success text-dark">Depose</span></td>
+                        </tr>
+                        <tr>
+                            <td>DEV</td>
+                            <td>HTML</td>
+                            <td>101</td>
+                            <td>Ahmed</td>
+                            <td>Bob</td>
+                            <td><span class="badge bg-primary text-dark">En attente</span></td>
+                        </tr>
+                        <tr>
+                            <td>DEV</td>
+                            <td>HTML</td>
+                            <td>101</td>
+                            <td>Ahmed</td>
+                            <td>Bob</td>
+                            <td><span class="badge bg-warning text-dark">En cours</span></td>
+                        </tr>
+                        <tr>
+                            <td>DEV</td>
+                            <td>HTML</td>
+                            <td>101</td>
+                            <td>Ahmed</td>
+                            <td>Bob</td>
+                            <td><span class="badge bg-danger text-dark">non deposes</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-primary ms-2">Export</button>
                 </div>
-            </div>
-            <!--CARD 3-->
-            <div class="col-3">
-                <div class="card shadow-sm  rounded-5 border-opacity-50 border-warning pt-1">
-                    <div class="card-body text-center">
-                        <h4 class="text-center mt-3">Modules deposes en attente de Verification</h4>
-                        <p class="text-center fs-3 mb-3 text-success">11</p>
-                    </div>
-                </div>
-            </div>
-            <!--CARD 4-->
-            <div class="col-3">
-                <div class="card shadow-sm rounded-5 border-opacity-50 border-danger p-3 ">
-                    <div class="card-body text-center">
-                        <h4 class="text-center mt-3">Modules non Conformes</h4>
-                        <p class="text-center fs-3 mb-3 text-success">5</p>
-                    </div>
-                </div>
-            </div>
+            </div>    
+        </div>
+
+         <!-- notifications -->
+        <div class="notifications-panel">
+            <h4 class="mb-4 text-center">Notifications </h4>
+            <div class="aLert alert-primary">New module</div>
+            <div class="aLert alert-warning">new .......</div>
+            <div class="aLert alert-danger">....... .......</div>
         </div>
     </div>
-    
 
-    <!--TABLE -->
-    <div class="row p-4 mt-4">
-        <div class="col-12 border shadow-sm rounded-4  p-3"> 
-        <h3 class="pb-3">Affectation recentes</h3>
-        <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
-            <thead class="table-primary text-center">
-                <tr>
-                    <th>Filiere</th>
-                    <th>Module</th>
-                    <th>Groupe</th>
-                    <th>Formateur Responsable</th>
-                    <th>Formateur Verificateur</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody class="text-center">
-                <tr>
-                    <td>DEV</td>
-                    <td>HTML</td>
-                    <td>101</td>
-                    <td>Ahmed</td>
-                    <td>Bob</td>
-                    <td><span class="badge bg-success text-dark">Depose</span></td>
-                </tr>
-                <tr>
-                    <td>DEV</td>
-                    <td>HTML</td>
-                    <td>101</td>
-                    <td>Ahmed</td>
-                    <td>Bob</td>
-                    <td><span class="badge bg-primary text-dark">En attente</span></td>
-                </tr>
-                <tr>
-                    <td>DEV</td>
-                    <td>HTML</td>
-                    <td>101</td>
-                    <td>Ahmed</td>
-                    <td>Bob</td>
-                    <td><span class="badge bg-warning text-dark">En cours</span></td>
-                </tr>
-                <tr>
-                    <td>DEV</td>
-                    <td>HTML</td>
-                    <td>101</td>
-                    <td>Ahmed</td>
-                    <td>Bob</td>
-                    <td><span class="badge bg-danger text-dark">non deposes</span></td>
-                </tr>
-            </tbody>
-        </table>
-        <button class="btn btn-primary ms-2">Export</button>
-        </div>
-    </div>        
+   
 
-    
+
+
+
+
+
+
+
+
+
+    <script>
+        const bell = document.getElementById("bell");
+        const dashboard  = document.getElementById("dashboard");
+
+        bell.addEventListener("click", () => {
+            dashboard.classList.toggle("show-notifications");
+        });
+    </script>
 </body>
 
 </html>
