@@ -2,10 +2,11 @@
 include '../connexion.php';
 session_start();
 
-if(!isset($_SESSION['logged']) || $_SESSION['role'] !== 'FORMATEUR_RESPONSABLE') {
+if (!isset($_SESSION['logged']) || $_SESSION['role'] !== 'FORMATEUR_RESPONSABLE') {
     header("Location: ../login.php");
     exit;
 }
+
 
 $email = $_SESSION['email'];
 
@@ -20,6 +21,25 @@ if ($user) {
     $nom = 'Utilisateur';
     $prenom = '';
 }
+
+
+$sql = "
+SELECT 
+    modules.intitule AS module,
+    groupes.code_groupe AS groupe,
+    attributions_verification.statut_verification
+FROM attributions_verification
+JOIN attributions_module 
+    ON attributions_verification.attribution_module_id = attributions_module.id
+JOIN modules 
+    ON attributions_module.module_id = modules.id
+JOIN groupes 
+    ON attributions_module.groupe_id = groupes.id
+";
+
+$result = $pdo->query($sql);
+
+
 ?>
 
 
@@ -74,32 +94,42 @@ if ($user) {
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody class="text-center">
-                <tr>
-                    <td>HTML/CSS</td>
-                    <td>Groupe A</td>
-                    <td><span class="badge bg-danger text-dark">Non déposé</span></td>
-                    <td> <button type="button" class="btn btn-secondary btn-sm">Déposer</button></td>
-                </tr>
-                <tr>
-                    <td>Bases de donees</td>
-                    <td>Groupe B</td>
-                    <td><span class="badge bg-warning text-dark">En attente</span></td>
-                    <td><button type="button" class="btn btn-secondary btn-sm">Voir/Corriger</button></td>
-                </tr>
-                <tr>
-                    <td>JavaScript</td>
-                    <td>Groupe A</td>
-                    <td><span class="badge bg-primary text-dark">Anomalies</span></td>
-                    <td><button type="button" class="btn btn-secondary btn-sm">Voir/Corriger</button></td>
-                </tr>
-                <tr>
-                    <td>PHP/MySql</td>
-                    <td>Groupe C</td>
-                    <td><span class="badge bg-success text-dark">Validé</span></td>
-                    <td><button type="button" class="btn btn-secondary btn-sm">Voir</button></td>
-                </tr>
-            </tbody>
+             <tbody class="text-center">
+        <?php
+       $rows = $result->fetchAll(PDO::FETCH_ASSOC); 
+
+    if ($rows) { 
+        foreach ($rows as $row) {
+        ?>
+            <tr>
+                <td><?= $row['module'] ?></td>
+                <td><?= $row['groupe'] ?></td>
+                <td>
+                    <?php
+                    if ($row['statut_verification'] === 'NON_DEPOSE') {
+                        echo '<span class="badge bg-danger">Non déposé</span>';
+                    } elseif ($row['statut_verification'] === 'NON_CONFORME') {
+                        echo '<span class="badge bg-warning text-dark">Anomalie</span>';
+                    } else {
+                        echo '<span class="badge bg-success">Validé</span>';
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    if ($row['statut_verification'] === 'NON_DEPOSE') {
+                        echo '<button class="btn btn-success btn-sm">Déposer</button>';
+                    } elseif ($row['statut_verification'] === 'NON_CONFORME') {
+                        echo '<button class="btn btn-warning btn-sm">Voir / Corriger</button>';
+                    } else {
+                        echo '<button class="btn btn-secondary btn-sm">Voir</button>';
+                    }
+                    ?>
+                </td>
+            </tr>
+        <?php }
+        }  ?>
+    </tbody>
         </table>
 
         </div>
