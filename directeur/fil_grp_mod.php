@@ -54,6 +54,9 @@
             width: 100px;
         }
 
+        
+
+
     </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -112,7 +115,7 @@
     <div class="row p-4 mt-4">
         <div class="col-12 border shadow-sm rounded-4  p-3"> 
             <h3 class="pb-3 ">Filieres </h3>
-            <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
+            <table class="table table-responsive table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
                 <thead class="table-primary text-center">
                     <tr>
                         <th>Code Filiere</th>
