@@ -70,7 +70,7 @@
             padding: 0px;
             margin: 20px;
             transition: width 0.4s ease, padding 0.4 ease;
-            border-radiUs: 60px;
+            border-radius: 60px;
             color: rgba(243, 214, 214, 1);
         }
 
@@ -269,5 +269,4 @@
         });
     </script>
 </body>
-
 </html>
