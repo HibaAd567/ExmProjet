@@ -17,6 +17,7 @@
     $stmt -> execute();
     $formateurs = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
+    // form
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if(!empty($_POST['nom_form']) && !empty($_POST['prenom_form']) && !empty($_POST['email_form']) && !empty($_POST['password_form']) && !empty($_POST['role_formateur'])) {
             $nom_form = $_POST['nom_form'];

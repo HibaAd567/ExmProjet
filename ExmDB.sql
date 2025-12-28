@@ -42,7 +42,6 @@ CREATE TABLE groupes (
 );
 
 
-
 CREATE TABLE attributions_module (
     id INT AUTO_INCREMENT PRIMARY KEY,
     module_id INT NOT NULL,
@@ -138,6 +137,11 @@ insert into utilisateurs (id, nom, prenom, email, mot_de_passe_hash, role, actif
 
 select * from utilisateurs;
 
+select * from filieres;
+
+select * from groupes;
+	 	
+select * from modules;
 
 
 

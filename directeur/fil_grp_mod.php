@@ -12,11 +12,23 @@
     $stmt -> execute();
     $nom = $stmt -> fetchColumn();
 
+    //filieres
+    $stmt = $pdo -> prepare("select code_filiere, intitule, secteur, niveau, type_formation from filieres");
+    $stmt -> execute();
+    $filieres = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+    //groupes
+    $stmt = $pdo -> prepare("select code_groupe, f.intitule as filiere_intitule from groupes g join filieres f on f.id = g.filiere_id");
+    $stmt -> execute();
+    $groupes = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+    //modules
+    $stmt = $pdo -> prepare("select m.intitule as module_intitule, numero, f.intitule as filiere_intitule, masse_horaire from modules m join filieres f on f.id = m.filiere_id;");
+    $stmt -> execute();
+    $modules = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
 
-
-
-
+    
 ?>
 
 <!DOCTYPE html>
@@ -158,47 +170,27 @@
                                 <tr>
                                     <th>Code Filiere</th>
                                     <th>Nom Filiere</th>
-                                    <th>Niveau</th>
                                     <th>Secteur </th>
+                                    <th>Niveau</th>
                                     <th>Type Formation</th>
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                <tr>
-                                    <td>DEV</td>
-                                    <td>Developpement Digitale</td>
-                                    <td>TS</td>
-                                    <td>sdfsdf</td>
-                                    <td>sdfsdf</td>
-                                </tr>
-                                <tr>
-                                    <td>AA</td>
-                                    <td>Asisstant Administratif</td>
-                                    <td>TS</td>
-                                    <td>sdfsdf</td>
-                                    <td>sdfsdf</td>
-                                </tr>
-                                <tr>
-                                    <td>INFO</td>
-                                    <td>Inforgraphie </td>
-                                    <td>TS</td>
-                                    <td>sdfsdf</td>
-                                    <td>sdfsdf</td>
-                                </tr>
-                                <tr>
-                                    <td>DEV</td>
-                                    <td>Developpement Digitale</td>
-                                    <td>TS</td>
-                                    <td>sdfsdf</td>
-                                    <td>sdfsdf</td>
-                                </tr>
-                                <tr>
-                                    <td>DEV</td>
-                                    <td>Developpement Digitale</td>
-                                    <td>TS</td>
-                                    <td>sdfsdf</td>
-                                    <td>sdfsdf</td>
-                                </tr>
+                                <?php if(!empty($filieres)) : ?>
+                                    <?php foreach($filieres as $f) : ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($f['code_filiere']) ?> </td>
+                                            <td><?= htmlspecialchars($f['intitule']) ?> </td>
+                                            <td><?= htmlspecialchars($f['secteur']) ?> </td>
+                                            <td><?= htmlspecialchars($f['niveau']) ?> </td>
+                                            <td><?= htmlspecialchars($f['type_formation']) ?> </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <tr>
+                                        <td colspan='4'>Aucun Filieres trouve</td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -275,47 +267,21 @@
                                 <tr>
                                     <th>Code Groupe</th>
                                     <th>Filiere</th>
-                                    <th>Annee</th>
-                                    <th>Etudiants </th>
-                                    <th>Filiere Assoc</th>
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                <tr>
-                                    <td>101</td>
-                                    <td>DD</td>
-                                    <td>2025</td>
-                                    <td>25</td>
-                                    <td>DD</td>
-                                </tr>
-                                <tr>
-                                    <td>102</td>
-                                    <td>DD</td>
-                                    <td>2025</td>
-                                    <td>24</td>
-                                    <td>DD</td>
-                                </tr>
-                                <tr>
-                                    <td>201</td>
-                                    <td>DDOWFS</td>
-                                    <td>2025</td>
-                                    <td>25</td>
-                                    <td>DDOWFS</td>
-                                </tr>
-                                <tr>
-                                    <td>101</td>
-                                    <td>INFO</td>
-                                    <td>2025</td>
-                                    <td>25</td>
-                                    <td>INFO</td>
-                                </tr>
-                                <tr>
-                                    <td>101</td>
-                                    <td>INFO</td>
-                                    <td>2025</td>
-                                    <td>25</td>
-                                    <td>INFO</td>
-                                </tr>
+                                <?php if(!empty($groupes)) : ?>
+                                    <?php foreach($groupes as $g) : ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($g['code_groupe']) ?></td>
+                                            <td><?= htmlspecialchars($g['filiere_intitule']) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <tr>
+                                        <td colspan='4'>Aucun Groupe Trouve</td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -377,38 +343,23 @@
                                     <th>Numero</th>
                                     <th>Filiere</th>
                                     <th>Masse Horraire </th>
-                                    <th>Filiere Assoc</th>
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                <tr>
-                                    <td>Dev Front-End</td>
-                                    <td>fsdf</td>
-                                    <td>DDOWFS</td>
-                                    <td>100H</td>
-                                    <td>DDOWFS</td>
-                                </tr>
-                                <tr>
-                                    <td>Dev Back-End</td>
-                                    <td>fsdf</td>
-                                    <td>DDOWFS</td>
-                                    <td>80H</td>
-                                    <td>DDOWFS</td>
-                                </tr>
-                                <tr>
-                                    <td>Soft Skills</td>
-                                    <td>fsdf</td>
-                                    <td>DDOWFS</td>
-                                    <td>30H</td>
-                                    <td>DDOWFS</td>
-                                </tr>
-                                <tr>
-                                    <td>Dev Front-End</td>
-                                    <td>fsdf</td>
-                                    <td>DDOWFS</td>
-                                    <td>55H</td>
-                                    <td>DDOWFS</td>
-                                </tr>
+                                <?php if(!empty($modules)) : ?>
+                                    <?php foreach($modules as $m) : ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($m['module_intitule']) ?></td>
+                                            <td><?= htmlspecialchars($m['numero']) ?></td>
+                                            <td><?= htmlspecialchars($m['filiere_intitule']) ?></td>
+                                            <td><?= htmlspecialchars($m['masse_horaire']) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <tr>
+                                        <td colspan='4'>Aucun Modules Trouve</td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
