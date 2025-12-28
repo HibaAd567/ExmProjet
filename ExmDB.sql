@@ -138,3 +138,7 @@ insert into utilisateurs (id, nom, prenom, email, mot_de_passe_hash, role, actif
 
 select * from utilisateurs;
 
+
+
+
+

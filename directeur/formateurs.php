@@ -13,8 +13,28 @@
     $nom = $stmt -> fetchColumn();
 
 
+    $stmt =$pdo -> prepare("select nom, prenom, email, role from utilisateurs where role like 'FORMATEUR%' ");
+    $stmt -> execute();
+    $formateurs = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if(!empty($_POST['nom_form']) && !empty($_POST['prenom_form']) && !empty($_POST['email_form']) && !empty($_POST['password_form']) && !empty($_POST['role_formateur'])) {
+            $nom_form = $_POST['nom_form'];
+            $prenom_form = $_POST['prenom_form'];
+            $email_form = $_POST['email_form'];
+            $password_form = password_hash($_POST['password_form'], PASSWORD_DEFAULT);
+            $role_formateur = $_POST['role_formateur'];
+
+            $stmt = $pdo -> prepare("insert into utilisateurs (nom, prenom, email, mot_de_passe_hash, role) values (?, ?, ?, ?, ?)");
+            $stmt -> execute([$nom_form, $prenom_form, $email_form, $password_form, $role_formateur]);
+        }
+    }
     
+
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +43,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous"><link href="loginn.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <title>Affectation</title>
+    <title>Formateurs</title>
     <style>
         body {
             margin: 0;
@@ -143,59 +163,34 @@
             <!--TABLE -->
             <div class="row p-4 mt-4">
                 <div class="col-12 border shadow-sm rounded-4  p-3"> 
-                    <h3 class="pb-3">Affectation </h3>
+                    <h3 class="pb-3">Formateurs </h3>
                     <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
                         <thead class="table-primary text-center">
                             <tr>
-                                <th>Filiere</th>
-                                <th>Module</th>
-                                <th>Groupe</th>
-                                <th>Formateur Responsable</th>
-                                <th>Formateur Verificateur</th>
-                                <th>Annee</th>
-                                <th>Semestre</th>
+                                <th>Nom Formateur</th>
+                                <th>Prenom Formateur</th>
+                                <th>email</th>
+                                <th>role </th>
                             </tr>
                         </thead>
                         <tbody class="text-center">
-                            <tr>
-                                <td>DEV</td>
-                                <td>HTML</td>
-                                <td>101</td>
-                                <td>Ahmed</td>
-                                <td>Bob</td>
-                                <td>2025</td>
-                                <td>1er</td>
-                            </tr>
-                            <tr>
-                                <td>DEV</td>
-                                <td>HTML</td>
-                                <td>101</td>
-                                <td>Ahmed</td>
-                                <td>Bob</td>
-                                <td>2025</td>
-                                <td>1er</td>
-                            </tr>
-                            <tr>
-                                <td>DEV</td>
-                                <td>HTML</td>
-                                <td>101</td>
-                                <td>Ahmed</td>
-                                <td>Bob</td>
-                                <td>2025</td>
-                                <td>2eme</td>
-                            </tr>
-                            <tr>
-                                <td>DEV</td>
-                                <td>HTML</td>
-                                <td>101</td>
-                                <td>Ahmed</td>
-                                <td>Bob</td>
-                                <td>2025</td>
-                                <td>2eme</td>
-                            </tr>
+                            <?php if (!empty($formateurs)) : ?>
+                                <?php foreach($formateurs as $f) : ?>
+                                    <tr>
+                                        <td> <?= htmlspecialchars($f['nom']) ?> </td>
+                                        <td> <?= htmlspecialchars($f['prenom']) ?> </td>
+                                        <td> <?= htmlspecialchars($f['email']) ?> </td>
+                                        <td> <?= htmlspecialchars($f['role']) ?> </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <tr>
+                                    <td colspan='4'>Aucun Formateur trouve</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
-                    <button type="button" class="float-end btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#affecter_form" >Affecter </button>
+                    <button type="button" class="float-end btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#ajouter_formateur" >Affecter </button>
                 </div>
             </div>    
         </div>    
@@ -211,72 +206,44 @@
 
 
      <!-- MODAL  -->
-    <div class="modal fade" id="affecter_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="ajouter_formateur" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Affectation</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ajouter</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Formulaire  -->
                     <form method="POST">
                         <div class="mb-3">
-                            <label for="filiere" class="form-label mt-3">Filiere :</label>
-                            <select name="filiere" class="form-select w-100" required>
-                                <option value="DD">DD </option>
-                                <option value="INFO">INFO  </option>
-                                <option value="AA">AA  </option>
-                            </select>
+                            <label for="nom_form" class="form-label mt-3">Nom Formateur :</label>
+                            <input type="text" class="form-control form-control-lg" id="nom_form" name="nom_form" required >
                         </div>
                         <div class="mb-4">
-                            <label for="groupe" class="form-label mt-3">Groupe :</label>
-                            <select name="groupe" class="form-select w-100" required>
-                                <option value="DD101">DD101 </option>
-                                <option value="DD102">DD1023  </option>
-                                <option value="INFO101">INFO101  </option>
-                            </select>
+                            <label for="prenom_form" class="form-label mt-3">Prenom Formateur :</label>
+                            <input type="text" class="form-control form-control-lg" id="prenom_form" name="prenom_form" required >
                         </div>
                         <div class="mb-4">
-                            <label for="module" class="form-label mt-3">Module :</label>
-                            <select name="module" class="form-select w-100" required>
-                                <option value="DEV Front End">DEV Front End</option>
-                                <option value="DEV Back End">DEV Back End</option>
-                            </select>
+                            <label for="email_form" class="form-label mt-3">Email :</label>
+                            <input type="email" class="form-control form-control-lg" id="email_form" name="email_form" required >
                         </div>
                         <div class="mb-4">
-                            <label for="formateur_resp" class="form-label mt-3">Formateur Responsable :</label>
-                            <select name="formateur_resp" class="form-select w-100" required>
-                                <option value="Sarah Addem">Sarah Addem</option>
-                                <option value="Ahmed Saidi">Ahmed Saidi</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="formateur_verificateur" class="form-label mt-3">Formateur Verificateur :</label>
-                            <select  name="formateur_verificateur" class="form-select w-100" required>
-                                <option value="Sarah Addem">Sarah Addem</option>
-                                <option value="Ahmed Saidi">Ahmed Saidi</option>
-                            </select>
+                            <label for="password_form" class="form-label mt-3">Password :</label>
+                            <input type="password" class="form-control form-control-lg" id="password_form" name="password_form" required >
                         </div>
                         <div class="mb-4">
-                            <label for="annee" class="form-label mt-3">Annee :</label>
-                            <select name="annee" class="form-select w-100" required>
-                                <option value="2025">2025 </option>
-                                <option value="2024">2024  </option>
+                            <label for="role_formateur" class="form-label mt-3">Role :</label>
+                            <select name="role_formateur" class="form-select w-100" required>
+                                <option value="FORMATEUR_RESPONSABLE ">Responsable </option>
+                                <option value="FORMATEUR_VERIFICATEUR ">Verificateur </option>
                             </select>
                         </div>
-                        <div class="mb-4">
-                            <label for="semestre" class="form-label mt-3">Semestre :</label>
-                            <select name="semestre" class="form-select w-100" required>
-                                <option value="1er">1er </option>
-                                <option value="2eme">2eme  </option>
-                            </select>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
                         </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Affecter</button>
                 </div>
             </div>
         </div>

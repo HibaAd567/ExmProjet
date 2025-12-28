@@ -228,7 +228,7 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="niveau" class="form-label mt-3">Niveau :</label>
-                                    <select class="form-select w-100" required>
+                                    <select name="niveau"  class="form-select w-100" required>
                                         <option value="TS">TS</option>
                                         <option value="T">T</option>
                                     </select>
@@ -340,14 +340,14 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="code_filiere" class="form-label mt-3">Code Filiere :</label>
-                                    <select class="form-select w-100" required>
+                                    <select name="code_filiere" class="form-select w-100" required>
                                         <option value="DD">DD</option>
                                         <option value="INFO">INFO</option>
                                     </select>
                                 </div>
                                 <div class="mb-4">
                                     <label for="annee" class="form-label mt-3">Annee :</label>
-                                    <select class="form-select w-100" required>
+                                    <select name="annee" class="form-select w-100" required>
                                         <option value="2025">2025</option>
                                         <option value="2024">2024</option>
                                         <option value="2023">2023</option>
@@ -438,7 +438,7 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="filiere" class="form-label mt-3">Filiere :</label>
-                                    <select class="form-select w-100" required>
+                                    <select name="filiere" class="form-select w-100" required>
                                         <option value="DD">DD</option>
                                         <option value="DDOWSF">DDOWSF</option>
                                         <option value="INFO">INFO</option>
