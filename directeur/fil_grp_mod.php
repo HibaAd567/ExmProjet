@@ -241,11 +241,11 @@
                                     <label for="type_formation" class="form-label mt-3">Type de Formation :</label>
                                     <input type="text" class="form-control form-control-lg" id="type_formation" name="type_formation" required>
                                 </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                                </div>
                             </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Ajouter</button>
                         </div>
                     </div>
                 </div>
@@ -353,11 +353,11 @@
                                         <option value="2023">2023</option>
                                     </select>
                                 </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="subnit" class="btn btn-primary">Ajouter</button>
+                                </div>
                             </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Ajouter</button>
                         </div>
                     </div>
                 </div>
@@ -448,11 +448,11 @@
                                     <label for="masse_horraire" class="form-label mt-3">Masse Horraire : (par heure)</label>
                                     <input type="number" min="20" max="200" step="5" class="form-control form-control-lg" id="masse_horraire" name="masse_horraire" required >
                                 </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="subnit" class="btn btn-primary">Ajouter</button>
+                                </div>
                             </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Ajouter</button>
                         </div>
                     </div>
                 </div>
