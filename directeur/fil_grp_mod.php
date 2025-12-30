@@ -29,9 +29,45 @@
 
     // form_filiere
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if(!empty($_POST['code_filiere']) && !empty($_POST['titre_filiere']) && !empty($_POST['secteur']) && !empty($_POST['niveau']) && !empty($_POST['type_formation'])) {
-            //finish... 
+        if($_POST['form-type'] === 'filiere') {
+            if(!empty($_POST['code_filiere']) && !empty($_POST['titre_filiere']) && !empty($_POST['secteur']) && !empty($_POST['niveau']) && !empty($_POST['type_formation'])) {
+                $code_filiere = $_POST['code_filiere'];
+                $titre_filiere = $_POST['titre_filiere'];
+                $secteur = $_POST['secteur'];
+                $niveau = $_POST['niveau'];
+                $type_formation = $_POST['type_formation'];
+
+                $stmt = $pdo -> prepare("insert into filieres (code_filiere, intitule, secteur, niveau, type_formation) VALUES (?, ?, ?, ?, ?)");
+                $stmt -> execute([$code_filiere, $titre_filiere, $secteur, $niveau, $type_formation]);
+
+            }
+
+        } elseif($_POST['form-type'] === 'groupe') {
+            if(!empty($_POST['code_groupe']) && !empty($_POST['code_filiere']) && !empty($_POST['annee']) ) {
+                $code_groupe = $_POST['code_groupe'];
+                $code_filiere = $_POST['code_filiere'];
+                $annee = $_POST['annee'];
+
+
+
+                //finish... 
+            }
+
+
+        } elseif($_POST['form-type'] === 'module') {
+            if(!empty($_POST['nom_module']) && !empty($_POST['module_numero']) && !empty($_POST['filiere']) && !empty($_POST['masse_horraire']) ) {
+                $nom_module = $_POST['nom_module'];
+                $module_numero = $_POST['module_numero'];
+                $filiere = $_POST['nom_module'];
+                $masse_horraire = $_POST['masse_horraire'];
+
+
+
+
+                //finish... 
+            }
         }
+
     }
 
 ?>
@@ -215,6 +251,7 @@
                         <div class="modal-body">
                             <!-- Formulaire  -->
                             <form method="POST">
+                                <input type="hidden" name="form-type" value="filiere">
                                 <div class="mb-4">
                                     <label for="code_filiere" class="form-label mt-3">Code Filiere :</label>
                                     <input type="text" class="form-control form-control-lg" id="code_filiere" name="code_filiere" required>
@@ -232,6 +269,8 @@
                                     <select name="niveau"  class="form-select w-100" required>
                                         <option value="TS">TS</option>
                                         <option value="T">T</option>
+                                        <option value="S">S</option>
+                                        <option value="Q">Q</option>
                                     </select>
                                 </div>
                                 <div class="mb-4">
@@ -305,6 +344,7 @@
                         <div class="modal-body">
                             <!-- Formulaire  -->
                             <form method="POST">
+                                <input type="hidden" name="form-type" value="groupe">
                                 <div class="mb-3 ">
                                     <label for="code_groupe" class="form-label mt-3">Code Groupe:</label>
                                     <input type="text" class="form-control form-control-lg" id="code_groupe" name="code_groupe" required >
@@ -384,6 +424,7 @@
                         <div class="modal-body">
                             <!-- Formulaire -->
                             <form method="POST">
+                                <input type="hidden" name="form-type" value="module">
                                 <div class="mb-3 ">
                                     <label for="nom_module" class="form-label mt-3">Nom Module :</label>
                                     <input type="text" class="form-control form-control-lg" id="nom_module" name="nom_module" required >
