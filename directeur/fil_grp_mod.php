@@ -27,8 +27,13 @@
     $stmt -> execute();
     $modules = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
+    // form_filiere
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if(!empty($_POST['code_filiere']) && !empty($_POST['titre_filiere']) && !empty($_POST['secteur']) && !empty($_POST['niveau']) && !empty($_POST['type_formation'])) {
+            //finish... 
+        }
+    }
 
-    
 ?>
 
 <!DOCTYPE html>
@@ -210,13 +215,17 @@
                         <div class="modal-body">
                             <!-- Formulaire  -->
                             <form method="POST">
-                                <div class="mb-3 ">
+                                <div class="mb-4">
+                                    <label for="code_filiere" class="form-label mt-3">Code Filiere :</label>
+                                    <input type="text" class="form-control form-control-lg" id="code_filiere" name="code_filiere" required>
+                                </div>
+                                <div class="mb-4 ">
                                     <label for="titre_filiere" class="form-label mt-3">Titre Filiere:</label>
                                     <input type="text" class="form-control form-control-lg" id="titre_filiere" name="titre_filiere" required >
                                 </div>
                                 <div class="mb-4">
-                                    <label for="code_filiere" class="form-label mt-3">Code Filiere :</label>
-                                    <input type="text" class="form-control form-control-lg" id="code_filiere" name="code_filiere" required>
+                                    <label for="secteur" class="form-label mt-3">Secteur :</label>
+                                    <input type="text" class="form-control form-control-lg" id="secteur" name="secteur" required>
                                 </div>
                                 <div class="mb-4">
                                     <label for="niveau" class="form-label mt-3">Niveau :</label>
@@ -224,10 +233,6 @@
                                         <option value="TS">TS</option>
                                         <option value="T">T</option>
                                     </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="secteur" class="form-label mt-3">Secteur :</label>
-                                    <input type="text" class="form-control form-control-lg" id="secteur" name="secteur" required>
                                 </div>
                                 <div class="mb-4">
                                     <label for="type_formation" class="form-label mt-3">Type de Formation :</label>

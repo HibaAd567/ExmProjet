@@ -33,6 +33,8 @@ CREATE TABLE modules (
 );
 
 
+
+
 CREATE TABLE groupes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     filiere_id INT NOT NULL,
@@ -142,7 +144,6 @@ select * from filieres;
 select * from groupes;
 	 	
 select * from modules;
-
 
 
 
