@@ -26,7 +26,7 @@ CREATE TABLE filieres (
 CREATE TABLE modules (
     id INT AUTO_INCREMENT PRIMARY KEY,
     filiere_id INT NOT NULL,
-    numero INT NOT NULL,
+    numero varchar(50) NOT NULL,
     intitule VARCHAR(255) NOT NULL,
     masse_horaire INT NOT NULL,
     FOREIGN KEY (filiere_id) REFERENCES filieres(id)
@@ -125,15 +125,59 @@ CREATE TABLE notifications (
 );
 
 
+
+
+delimiter $$
+create procedure insert_groupe(p_codeFiliere varchar(50), p_codeGroup varchar(50), p_annee varchar(50))
+begin
+	declare v_filiereId int;
+	
+    select id into v_filiereId
+    from filieres 
+    where code_filiere = p_codeFiliere
+    limit 1;
+    
+    if v_filiereId is null then 
+		signal sqlstate '45000' set message_text = "filiere not found";
+    else 
+		insert into groupes (filiere_id, code_groupe, annee_formation) values 
+        (v_filiereId, p_codeGroup, p_annee);
+	end if;
+end$$
+delimiter ;
+
+
+
+delimiter $$
+create procedure insert_module(p_codeFiliere varchar(50), p_numero varchar(100), p_intitule varchar(100), p_masse_horaire int)
+begin
+	declare v_filiereId int;
+	
+    select id into v_filiereId
+    from filieres 
+    where code_filiere = p_codeFiliere
+    limit 1;
+    
+    if v_filiereId is null then 
+		signal sqlstate '45000' set message_text = "filiere not found";
+    else 
+		insert into modules (filiere_id, numero, intitule, masse_horaire) values 
+        (v_filiereId, p_numero, p_intitule, p_masse_horaire);
+	end if;
+end$$
+delimiter ;
+
+
+
+
 insert into utilisateurs (id, nom, prenom, email, mot_de_passe_hash, role, actif) values 
 (1,'Ali','Ahmed','AliAhmed@academia.com','ali123/','DIRECTEUR',true);
 
 
 
-
-
 insert into utilisateurs (id, nom, prenom, email, mot_de_passe_hash, role, actif) values 
 (2,'Sarah','Anderson','formateur1@academia.com','form123/','FORMATEUR_RESPONSABLE',true);
+
 
 
 
@@ -146,4 +190,4 @@ select * from groupes;
 select * from modules;
 
 
-
+select code_filiere from filieres;

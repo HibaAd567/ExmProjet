@@ -31,11 +31,11 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($_POST['form-type'] === 'filiere') {
             if(!empty($_POST['code_filiere']) && !empty($_POST['titre_filiere']) && !empty($_POST['secteur']) && !empty($_POST['niveau']) && !empty($_POST['type_formation'])) {
-                $code_filiere = $_POST['code_filiere'];
-                $titre_filiere = $_POST['titre_filiere'];
-                $secteur = $_POST['secteur'];
-                $niveau = $_POST['niveau'];
-                $type_formation = $_POST['type_formation'];
+                $code_filiere = trim($_POST['code_filiere']);
+                $titre_filiere = trim($_POST['titre_filiere']);
+                $secteur = trim($_POST['secteur']);
+                $niveau = trim($_POST['niveau']);
+                $type_formation = trim($_POST['type_formation']);
 
                 $stmt = $pdo -> prepare("insert into filieres (code_filiere, intitule, secteur, niveau, type_formation) VALUES (?, ?, ?, ?, ?)");
                 $stmt -> execute([$code_filiere, $titre_filiere, $secteur, $niveau, $type_formation]);
@@ -43,32 +43,38 @@
             }
 
         } elseif($_POST['form-type'] === 'groupe') {
-            if(!empty($_POST['code_groupe']) && !empty($_POST['code_filiere']) && !empty($_POST['annee']) ) {
-                $code_groupe = $_POST['code_groupe'];
-                $code_filiere = $_POST['code_filiere'];
-                $annee = $_POST['annee'];
+            if(!empty($_POST['code_filiere']) && !empty($_POST['code_groupe']) && !empty($_POST['annee']) ) {
+                $code_filiere = trim($_POST['code_filiere']);
+                $code_groupe = trim($_POST['code_groupe']);
+                $annee = trim($_POST['annee']);
 
-
-
-                //finish... 
+                $stmt = $pdo -> prepare("call insert_groupe(?, ?, ?)");
+                $stmt -> execute([$code_filiere, $code_groupe, $annee]);
             }
 
 
         } elseif($_POST['form-type'] === 'module') {
-            if(!empty($_POST['nom_module']) && !empty($_POST['module_numero']) && !empty($_POST['filiere']) && !empty($_POST['masse_horraire']) ) {
-                $nom_module = $_POST['nom_module'];
-                $module_numero = $_POST['module_numero'];
-                $filiere = $_POST['nom_module'];
+            if(!empty($_POST['filiere']) && !empty($_POST['module_numero']) &&  !empty($_POST['nom_module']) && !empty($_POST['masse_horraire']) ) {
+                $filiere = trim($_POST['filiere']);
+                $module_numero = trim($_POST['module_numero']);
+                $nom_module = trim($_POST['nom_module']);
                 $masse_horraire = $_POST['masse_horraire'];
 
-
-
-
-                //finish... 
+                $stmt = $pdo -> prepare("call insert_module(?, ?, ?, ?)");
+                $stmt -> execute([$filiere, $module_numero, $nom_module, $masse_horraire]);
             }
         }
 
     }
+
+
+    $stmt = $pdo -> prepare("select code_filiere from filieres");
+    $stmt -> execute();
+    $code_filieres = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+
+
+
 
 ?>
 
@@ -345,28 +351,31 @@
                             <!-- Formulaire  -->
                             <form method="POST">
                                 <input type="hidden" name="form-type" value="groupe">
+                                <div class="mb-4">
+                                    <label for="code_filiere" class="form-label mt-3">Code Filiere :</label>
+                                    <select name="code_filiere" class="form-select w-100" required>
+                                        <?php if(!empty($code_filieres)) : ?> 
+                                            <?php foreach($code_filieres as $c)  : ?>  
+                                                <option value=" <?= htmlspecialchars($c['code_filiere']) ?> "> <?= htmlspecialchars($c['code_filiere']) ?> </option>
+                                            <?php endforeach; ?>  
+                                        <?php else : ?>
+                                            <option disabled>Aucun Filiere trouve</option>
+                                        <?php endif; ?>    
+                                    </select>
+                                </div>
                                 <div class="mb-3 ">
                                     <label for="code_groupe" class="form-label mt-3">Code Groupe:</label>
                                     <input type="text" class="form-control form-control-lg" id="code_groupe" name="code_groupe" required >
                                 </div>
                                 <div class="mb-4">
-                                    <label for="code_filiere" class="form-label mt-3">Code Filiere :</label>
-                                    <select name="code_filiere" class="form-select w-100" required>
-                                        <option value="DD">DD</option>
-                                        <option value="INFO">INFO</option>
-                                    </select>
-                                </div>
-                                <div class="mb-4">
                                     <label for="annee" class="form-label mt-3">Annee :</label>
                                     <select name="annee" class="form-select w-100" required>
                                         <option value="2025">2025</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2023">2023</option>
                                     </select>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="subnit" class="btn btn-primary">Ajouter</button>
+                                    <button type="submit" class="btn btn-primary">Ajouter</button>
                                 </div>
                             </form>
                         </div>
@@ -425,21 +434,25 @@
                             <!-- Formulaire -->
                             <form method="POST">
                                 <input type="hidden" name="form-type" value="module">
-                                <div class="mb-3 ">
-                                    <label for="nom_module" class="form-label mt-3">Nom Module :</label>
-                                    <input type="text" class="form-control form-control-lg" id="nom_module" name="nom_module" required >
+                                <div class="mb-4">
+                                    <label for="filiere" class="form-label mt-3">Filiere :</label>
+                                    <select name="filiere" class="form-select w-100" required>
+                                        <?php if(!empty($code_filieres)) : ?> 
+                                            <?php foreach($code_filieres as $c)  : ?>  
+                                                <option value=" <?= htmlspecialchars($c['code_filiere']) ?> "> <?= htmlspecialchars($c['code_filiere']) ?> </option>
+                                            <?php endforeach; ?>  
+                                        <?php else : ?>
+                                            <option disabled>Aucun Filiere trouve</option>
+                                        <?php endif; ?>    
+                                    </select>
                                 </div>
                                 <div class="mb-4">
                                     <label for="module_numero" class="form-label mt-3">Numero :</label>
                                     <input type="text" class="form-control form-control-lg" id="module_numero" name="module_numero" required >
                                 </div>
-                                <div class="mb-4">
-                                    <label for="filiere" class="form-label mt-3">Filiere :</label>
-                                    <select name="filiere" class="form-select w-100" required>
-                                        <option value="DD">DD</option>
-                                        <option value="DDOWSF">DDOWSF</option>
-                                        <option value="INFO">INFO</option>
-                                    </select>
+                                <div class="mb-3 ">
+                                    <label for="nom_module" class="form-label mt-3">Nom Module :</label>
+                                    <input type="text" class="form-control form-control-lg" id="nom_module" name="nom_module" required >
                                 </div>
                                 <div class="mb-4">
                                     <label for="masse_horraire" class="form-label mt-3">Masse Horraire : (par heure)</label>
