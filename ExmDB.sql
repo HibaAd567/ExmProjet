@@ -23,6 +23,7 @@ CREATE TABLE filieres (
     type_formation VARCHAR(100) NOT NULL
 );
 
+
 CREATE TABLE modules (
     id INT AUTO_INCREMENT PRIMARY KEY,
     filiere_id INT NOT NULL,
@@ -31,7 +32,6 @@ CREATE TABLE modules (
     masse_horaire INT NOT NULL,
     FOREIGN KEY (filiere_id) REFERENCES filieres(id)
 );
-
 
 
 
@@ -195,6 +195,8 @@ select * from modules;
 
 select * from attributions_module;
 
+select * from attributions_verification;
 
-select code_filiere from filieres;
+
+
 
