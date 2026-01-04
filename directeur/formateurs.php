@@ -191,7 +191,7 @@
                             <?php endif; ?>
                         </tbody>
                     </table>
-                    <button type="button" class="float-end btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#ajouter_formateur" >Affecter </button>
+                    <button type="button" class="float-end btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#ajouter_formateur" >Ajouter </button>
                 </div>
             </div>    
         </div>    

@@ -13,8 +13,36 @@
     $nom = $stmt -> fetchColumn();
 
 
+    $stmt = $pdo -> prepare("
+        SELECT g.code_groupe AS groupe, m.intitule AS module, ur.nom AS formateur_responsable, uv.nom AS formateur_verificateur, am.annee AS annee, am.semestre AS semestre
+        FROM attributions_module am
+        JOIN groupes g ON g.id = am.groupe_id
+        JOIN modules m ON m.id = am.module_id
+        JOIN utilisateurs ur ON ur.id = am.formateur_responsable_id
+        LEFT JOIN attributions_verification av ON av.attribution_module_id = am.id
+        LEFT JOIN utilisateurs uv ON uv.id = av.formateur_verificateur_id;
+    ");
 
-    
+    $stmt -> execute();
+    $tabAff = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+
+    // code filiere
+    $stmt = $pdo -> prepare("select code_filiere from filieres");
+    $stmt -> execute();
+    $code_filieres = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+    // code groupe
+    $selectedFilierere = $_POST['filiere'] ?? null;
+
+    $code_groupe = [];
+    $stmt = $pdo -> prepare("select g.code_groupe from groupes g join filieres f on f.id = g.filiere_id where f.code_filiere = ?");
+    $stmt -> execute([$selectedFilierere]);
+    $code_groupe = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -147,9 +175,8 @@
                     <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
                         <thead class="table-primary text-center">
                             <tr>
-                                <th>Filiere</th>
-                                <th>Module</th>
                                 <th>Groupe</th>
+                                <th>Module</th>
                                 <th>Formateur Responsable</th>
                                 <th>Formateur Verificateur</th>
                                 <th>Annee</th>
@@ -157,42 +184,22 @@
                             </tr>
                         </thead>
                         <tbody class="text-center">
-                            <tr>
-                                <td>DEV</td>
-                                <td>HTML</td>
-                                <td>101</td>
-                                <td>Ahmed</td>
-                                <td>Bob</td>
-                                <td>2025</td>
-                                <td>1er</td>
-                            </tr>
-                            <tr>
-                                <td>DEV</td>
-                                <td>HTML</td>
-                                <td>101</td>
-                                <td>Ahmed</td>
-                                <td>Bob</td>
-                                <td>2025</td>
-                                <td>1er</td>
-                            </tr>
-                            <tr>
-                                <td>DEV</td>
-                                <td>HTML</td>
-                                <td>101</td>
-                                <td>Ahmed</td>
-                                <td>Bob</td>
-                                <td>2025</td>
-                                <td>2eme</td>
-                            </tr>
-                            <tr>
-                                <td>DEV</td>
-                                <td>HTML</td>
-                                <td>101</td>
-                                <td>Ahmed</td>
-                                <td>Bob</td>
-                                <td>2025</td>
-                                <td>2eme</td>
-                            </tr>
+                            <?php if(!empty($tabAff)) : ?>
+                                <?php foreach ($tabAff as $t) : ?>
+                                    <tr>
+                                        <td> <?= htmlspecialchars($t['groupe']) ?></td>
+                                        <td> <?= htmlspecialchars($t['module']) ?></td>
+                                        <td> <?= htmlspecialchars($t['formateur_responsable']) ?></td>
+                                        <td> <?= htmlspecialchars($t['formateur_verificateur']) ?></td>
+                                        <td> <?= htmlspecialchars($t['annee']) ?></td>
+                                        <td> <?= htmlspecialchars($t['semestre']) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <tr>
+                                    <td colspan='4'>Aucun data Trouve</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                     <button type="button" class="float-end btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#affecter_form" >Affecter </button>
@@ -220,21 +227,29 @@
                 </div>
                 <div class="modal-body">
                     <!-- Formulaire  -->
-                    <form method="POST">
+                    <form method="POST" >
                         <div class="mb-3">
                             <label for="filiere" class="form-label mt-3">Filiere :</label>
-                            <select name="filiere" class="form-select w-100" required>
-                                <option value="DD">DD </option>
-                                <option value="INFO">INFO  </option>
-                                <option value="AA">AA  </option>
+                            <select name="filiere" class="form-select w-100" required onchange="this.form.submit()">
+                                 <?php if(!empty($code_filieres)) : ?> 
+                                    <?php foreach($code_filieres as $c)  : ?>  
+                                        <option value=" <?= htmlspecialchars($c['code_filiere']) ?> "> <?= htmlspecialchars($c['code_filiere']) ?> </option>
+                                    <?php endforeach; ?>  
+                                <?php else : ?>
+                                        <option disabled>Aucun Filiere trouve</option>
+                                <?php endif; ?> 
                             </select>
                         </div>
                         <div class="mb-4">
                             <label for="groupe" class="form-label mt-3">Groupe :</label>
-                            <select name="groupe" class="form-select w-100" required>
-                                <option value="DD101">DD101 </option>
-                                <option value="DD102">DD1023  </option>
-                                <option value="INFO101">INFO101  </option>
+                            <select name="groupe" class="form-select w-100" required >
+                                <?php if(!empty($code_groupe)) : ?> 
+                                    <?php foreach($code_groupe as $c)  : ?>  
+                                        <option value=" <?= htmlspecialchars($c['code_groupe']) ?> "> <?= htmlspecialchars($c['code_groupe']) ?> </option>
+                                    <?php endforeach; ?>  
+                                <?php else : ?>
+                                        <option disabled>Aucun groupe trouve</option>
+                                <?php endif; ?> 
                             </select>
                         </div>
                         <div class="mb-4">

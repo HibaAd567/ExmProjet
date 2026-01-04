@@ -57,6 +57,9 @@ CREATE TABLE attributions_module (
 );
 
 
+
+
+
 CREATE TABLE attributions_verification (
     id INT AUTO_INCREMENT PRIMARY KEY,
     attribution_module_id INT NOT NULL,
@@ -190,4 +193,8 @@ select * from groupes;
 select * from modules;
 
 
+select * from attributions_module;
+
+
 select code_filiere from filieres;
+

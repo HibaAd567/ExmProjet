@@ -27,6 +27,7 @@
     $stmt -> execute();
     $modules = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
+    
     // form_filiere
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($_POST['form-type'] === 'filiere') {
