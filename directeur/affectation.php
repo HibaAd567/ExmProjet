@@ -14,15 +14,14 @@
 
 
     $stmt = $pdo -> prepare("
-        SELECT g.code_groupe AS groupe, m.intitule AS module, ur.nom AS formateur_responsable, uv.nom AS formateur_verificateur, am.annee AS annee, am.semestre AS semestre
-        FROM attributions_module am
-        JOIN groupes g ON g.id = am.groupe_id
-        JOIN modules m ON m.id = am.module_id
-        JOIN utilisateurs ur ON ur.id = am.formateur_responsable_id
-        LEFT JOIN attributions_verification av ON av.attribution_module_id = am.id
-        LEFT JOIN utilisateurs uv ON uv.id = av.formateur_verificateur_id;
+        select g.code_groupe as groupe, m.intitule as module, ur.nom as formateur_responsable, uv.nom as formateur_verificateur, am.annee as annee, am.semestre as semestre
+        from attributions_module am
+        join groupes g on g.id = am.groupe_id
+        join modules m on m.id = am.module_id
+        join utilisateurs ur on ur.id = am.formateur_responsable_id
+        left join attributions_verification av on av.attribution_module_id = am.id
+        left join utilisateurs uv on uv.id = av.formateur_verificateur_id;
     ");
-
     $stmt -> execute();
     $tabAff = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
@@ -32,16 +31,100 @@
     $stmt -> execute();
     $code_filieres = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
-    // code groupe
-    $selectedFilierere = $_POST['filiere'] ?? null;
 
-    $code_groupe = [];
-    $stmt = $pdo -> prepare("select g.code_groupe from groupes g join filieres f on f.id = g.filiere_id where f.code_filiere = ?");
-    $stmt -> execute([$selectedFilierere]);
-    $code_groupe = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+    //groupes by filiere
+    if (isset($_GET['ajax']) && $_GET['ajax'] === 'groupes') {
+
+        $filiere = trim($_GET['filiere'] ?? '');
+
+        if($filiere === '') {
+            echo json_encode([]);
+            exit;
+        }
+
+        $stmt = $pdo -> prepare("
+            select g.code_groupe from groupes g join filieres f on f.id = g.filiere_id
+            where trim(f.code_filiere) = ?"
+        );
+        $stmt -> execute([$filiere]);
+
+        echo json_encode($stmt -> fetchAll(PDO::FETCH_ASSOC));
+        exit;
+    }
+
+    // modules by groupe
+    if (isset($_GET['ajax']) && $_GET['ajax'] === 'modules') {
+
+        $groupe = trim($_GET['groupe'] ?? '');
+
+        if ($groupe === '') {
+            echo json_encode([]);
+            exit;
+        }
+
+        $stmt = $pdo->prepare("
+            select m.intitule from modules m
+            join attributions_module am on am.module_id = m.id
+            join groupes g on g.id = am.groupe_id
+            where g.code_groupe = ?"
+        );
+        $stmt->execute([$groupe]);
+
+        echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+        exit;
+    }
+
+    // fromateur resposable
+    $stmt = $pdo -> prepare("select nom, prenom from utilisateurs where role = 'FORMATEUR_RESPONSABLE' ");
+    $stmt -> execute();
+    $formateurResp = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+    // fromateur verificateur
+    $stmt = $pdo -> prepare("select nom, prenom from utilisateurs where role = 'FORMATEUR_VERIFICATEUR' ");
+    $stmt -> execute();
+    $formateurVerf = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
 
+    // insert form
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!empty($_POST['filiere']) && !empty($_POST['groupe']) && !empty($_POST['module']) && !empty($_POST['formateur_resp']) && !empty($_POST['formateur_verf']) &&  !empty($_POST['annee']) && !empty($_POST['semestre']) ) {
+            $groupe = trim($_POST['groupe']);
+            $module = trim($_POST['module']);
+            $formateur_resp = trim($_POST['formateur_resp']);
+            $formateur_verf = trim($_POST['formateur_verf']);
+            $annee = trim($_POST['annee']);
+            $semestre = trim($_POST['semestre']);
 
+            // groupe id
+            $stmt = $pdo->prepare("select id from groupes where code_groupe  = ?");
+            $stmt->execute([$groupe]);
+            $groupe_id = $stmt->fetchColumn();
+
+            // module id
+            $stmt = $pdo->prepare("select id from modules where intitule = ?");
+            $stmt->execute([$module]);
+            $module_id = $stmt->fetchColumn();
+
+            // formateur Resp id
+            $stmt = $pdo->prepare("select id from utilisateurs where concat(nom, ' ', prenom) = ?");
+            $stmt->execute([$formateur_resp]);
+            $formateurResp_id = $stmt->fetchColumn();
+
+            // insert formateur responsable
+            $stmt = $pdo -> prepare("insert into attributions_module (module_id, groupe_id, formateur_responsable_id, annee, semestre) values (?, ?, ?, ?, ?)");
+            $stmt -> execute([$module_id, $groupe_id, $formateurResp_id, $annee, $semestre]);
+
+            $attribution_id  = $pdo -> lastInsertId();
+
+            $stmt = $pdo->prepare("select id from utilisateurs where concat(nom, ' ', prenom) = ?");
+            $stmt->execute([$formateur_verf]);
+            $formateurVerf_id = $stmt->fetchColumn();
+
+            // insert formateur verificateur
+            $stmt = $pdo -> prepare("insert into attributions_verification (attribution_module_id, formateur_verificateur_id, date_affectation, statut_verification) values (?, ?, now(), 'NON_DEPOSE')");
+            $stmt -> execute([$attribution_id, $formateurVerf_id]);
+        }  
+    }
 
 ?>
 <!DOCTYPE html>
@@ -230,10 +313,12 @@
                     <form method="POST" >
                         <div class="mb-3">
                             <label for="filiere" class="form-label mt-3">Filiere :</label>
-                            <select name="filiere" class="form-select w-100" required onchange="this.form.submit()">
+                            <select name="filiere" id="filiereSelect" class="form-select w-100" required>
                                  <?php if(!empty($code_filieres)) : ?> 
                                     <?php foreach($code_filieres as $c)  : ?>  
-                                        <option value=" <?= htmlspecialchars($c['code_filiere']) ?> "> <?= htmlspecialchars($c['code_filiere']) ?> </option>
+                                        <option value="<?= htmlspecialchars($c['code_filiere']) ?>">
+                                            <?= htmlspecialchars($c['code_filiere']) ?>
+                                        </option>
                                     <?php endforeach; ?>  
                                 <?php else : ?>
                                         <option disabled>Aucun Filiere trouve</option>
@@ -241,36 +326,43 @@
                             </select>
                         </div>
                         <div class="mb-4">
-                            <label for="groupe" class="form-label mt-3">Groupe :</label>
-                            <select name="groupe" class="form-select w-100" required >
-                                <?php if(!empty($code_groupe)) : ?> 
-                                    <?php foreach($code_groupe as $c)  : ?>  
-                                        <option value=" <?= htmlspecialchars($c['code_groupe']) ?> "> <?= htmlspecialchars($c['code_groupe']) ?> </option>
-                                    <?php endforeach; ?>  
-                                <?php else : ?>
-                                        <option disabled>Aucun groupe trouve</option>
-                                <?php endif; ?> 
+                            <label for="groupe"  class="form-label mt-3">Groupe :</label>
+                            <select name="groupe" id="groupeSelect" class="form-select w-100" required >
+                                <option value="">-- Choisir groupe --</option>
                             </select>
                         </div>
                         <div class="mb-4">
-                            <label for="module" class="form-label mt-3">Module :</label>
-                            <select name="module" class="form-select w-100" required>
-                                <option value="DEV Front End">DEV Front End</option>
-                                <option value="DEV Back End">DEV Back End</option>
+                            <label for="module"  class="form-label mt-3">Module :</label>
+                            <select name="module" id="moduleSelect" class="form-select w-100" required>
+                                <option value="">-- Choisir module --</option>
                             </select>
                         </div>
                         <div class="mb-4">
                             <label for="formateur_resp" class="form-label mt-3">Formateur Responsable :</label>
                             <select name="formateur_resp" class="form-select w-100" required>
-                                <option value="Sarah Addem">Sarah Addem</option>
-                                <option value="Ahmed Saidi">Ahmed Saidi</option>
+                                <?php if(!empty($formateurResp)) : ?>
+                                    <?php foreach($formateurResp as $fr) : ?>
+                                        <option value="<?= htmlspecialchars($fr['nom'] . ' ' . $fr['prenom']) ?>">
+                                            <?= htmlspecialchars($fr['nom'] . ' ' . $fr['prenom']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <option disabled>Aucun Formateur Responsable trouve</option>
+                                <?php endif; ?>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="formateur_verificateur" class="form-label mt-3">Formateur Verificateur :</label>
-                            <select  name="formateur_verificateur" class="form-select w-100" required>
-                                <option value="Sarah Addem">Sarah Addem</option>
-                                <option value="Ahmed Saidi">Ahmed Saidi</option>
+                            <label for="formateur_verf" class="form-label mt-3">Formateur Verificateur :</label>
+                            <select  name="formateur_verf" class="form-select w-100" required>
+                                <?php if(!empty($formateurVerf)) : ?>
+                                    <?php foreach($formateurVerf as $fv) : ?>
+                                        <option value="<?= htmlspecialchars($fv['nom'] . ' ' . $fv['prenom']) ?>">
+                                            <?= htmlspecialchars($fv['nom'] . ' ' . $fv['prenom']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <option disabled>Aucun Formateur Verificateur trouve</option>
+                                <?php endif; ?>
                             </select>
                         </div>
                         <div class="mb-4">
@@ -283,8 +375,8 @@
                         <div class="mb-4">
                             <label for="semestre" class="form-label mt-3">Semestre :</label>
                             <select name="semestre" class="form-select w-100" required>
-                                <option value="1er">1er </option>
-                                <option value="2eme">2eme  </option>
+                                <option value="1">1er </option>
+                                <option value="2">2eme  </option>
                             </select>
                         </div>
                         <div class="modal-footer">
@@ -308,6 +400,76 @@
         bell.addEventListener("click", () => {
             dashboard.classList.toggle("show-notifications");
         });
+
+        
+        document.getElementById("filiereSelect").addEventListener("change", function () {
+            
+            const filiere = this.value.trim();
+            const groupeSelect = document.getElementById("groupeSelect");
+
+            if(!filiere) {
+                groupeSelect.innerHTML = '<option value="">-- Choisir groupe --</option>';
+                return;
+            }
+
+            fetch(
+                window.location.pathname + "?ajax=groupes&filiere=" + encodeURIComponent(filiere)
+            )
+            .then(res => res.json())
+            .then(data => {
+                groupeSelect.innerHTML = '<option value="">-- Choisir groupe --</option>';
+
+                if(data.length === 0) {
+                    groupeSelect.innerHTML += '<option disabled>Aucun groupe</option>';
+                    return;
+                }
+
+                data.forEach(g => {
+                    const opt = document.createElement("option");
+                    opt.value = g.code_groupe;
+                    opt.textContent = g.code_groupe;
+                    groupeSelect.appendChild(opt);
+                });
+
+            });
+
+        });
+
+
+        document.getElementById("groupeSelect").addEventListener("change", function () {
+
+            const groupe = this.value.trim();
+            const moduleSelect = document.getElementById("moduleSelect");
+
+            if (!groupe) {
+                moduleSelect.innerHTML = '<option value="">-- Choisir module --</option>';
+                return;
+            }
+
+            fetch(
+                window.location.pathname + "?ajax=modules&groupe=" + encodeURIComponent(groupe)
+            )
+            .then(res => res.json())
+            .then(data => {
+
+                moduleSelect.innerHTML = '<option value="">-- Choisir module --</option>';
+
+                if (data.length === 0) {
+                    moduleSelect.innerHTML += '<option disabled>Aucun module</option>';
+                    return;
+                }
+
+                data.forEach(m => {
+                    const opt = document.createElement("option");
+                    opt.value = m.intitule;
+                    opt.textContent = m.intitule;
+                    moduleSelect.appendChild(opt);
+                });
+
+            });
+        });
+
     </script>
+    
 </body>
 </html>
