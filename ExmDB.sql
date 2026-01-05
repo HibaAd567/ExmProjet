@@ -71,6 +71,7 @@ CREATE TABLE attributions_verification (
 );
 
 
+
 CREATE TABLE dossiers_examens (
     id INT AUTO_INCREMENT PRIMARY KEY,
     attribution_verification_id INT NOT NULL,
@@ -99,6 +100,8 @@ CREATE TABLE checklists_verification (
     FOREIGN KEY (attribution_verification_id) REFERENCES attributions_verification(id),
     FOREIGN KEY (verifie_par_id) REFERENCES utilisateurs(id)
 );
+
+
 
 
 CREATE TABLE anomalies (
