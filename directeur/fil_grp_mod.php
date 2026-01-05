@@ -236,7 +236,7 @@
                                     <?php endforeach; ?>
                                 <?php else : ?>
                                     <tr>
-                                        <td colspan='4'>Aucun Filieres trouve</td>
+                                        <td colspan='5'>Aucun Filieres trouve</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -330,7 +330,7 @@
                                     <?php endforeach; ?>
                                 <?php else : ?>
                                     <tr>
-                                        <td colspan='4'>Aucun Groupe Trouve</td>
+                                        <td colspan='2'>Aucun Groupe Trouve</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>

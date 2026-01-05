@@ -165,32 +165,34 @@
             <div class="row p-4 mt-4">
                 <div class="col-12 border shadow-sm rounded-4  p-3"> 
                     <h3 class="pb-3">Formateurs </h3>
-                    <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
-                        <thead class="table-primary text-center">
-                            <tr>
-                                <th>Nom Formateur</th>
-                                <th>Prenom Formateur</th>
-                                <th>email</th>
-                                <th>role </th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-center">
-                            <?php if (!empty($formateurs)) : ?>
-                                <?php foreach($formateurs as $f) : ?>
-                                    <tr>
-                                        <td> <?= htmlspecialchars($f['nom']) ?> </td>
-                                        <td> <?= htmlspecialchars($f['prenom']) ?> </td>
-                                        <td> <?= htmlspecialchars($f['email']) ?> </td>
-                                        <td> <?= htmlspecialchars($f['role']) ?> </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else : ?>
+                    <div class="table-container">
+                        <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
+                            <thead class="table-primary text-center">
                                 <tr>
-                                    <td colspan='4'>Aucun Formateur trouve</td>
+                                    <th>Nom Formateur</th>
+                                    <th>Prenom Formateur</th>
+                                    <th>email</th>
+                                    <th>role </th>
                                 </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="text-center">
+                                <?php if (!empty($formateurs)) : ?>
+                                    <?php foreach($formateurs as $f) : ?>
+                                        <tr>
+                                            <td> <?= htmlspecialchars($f['nom']) ?> </td>
+                                            <td> <?= htmlspecialchars($f['prenom']) ?> </td>
+                                            <td> <?= htmlspecialchars($f['email']) ?> </td>
+                                            <td> <?= htmlspecialchars($f['role']) ?> </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <tr>
+                                        <td colspan='4'>Aucun Formateur trouve</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
                     <button type="button" class="float-end btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#ajouter_formateur" >Ajouter </button>
                 </div>
             </div>    

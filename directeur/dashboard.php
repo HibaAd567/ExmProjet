@@ -12,9 +12,67 @@
     $stmt -> execute();
     $nom = $stmt -> fetchColumn();
 
+    // modules valides
+    $stmt = $pdo -> prepare("Select count(*) as modules_validees from attributions_verification 
+        where statut_verification = 'CONFORME' ");
+    $stmt -> execute();
+    $nbr_modules_valide = $stmt -> fetchColumn();
+
+    // modules non depose
+    $stmt = $pdo -> prepare("Select count(*) as modules_validees from attributions_verification 
+        where statut_verification = 'NON_DEPOSE' ");
+    $stmt -> execute();
+    $nbr_modules_nonDepose = $stmt -> fetchColumn();
+
+    // modules en attente de verification
+    $stmt = $pdo -> prepare("Select count(*) as modules_validees from attributions_verification 
+        where statut_verification = 'EN_VERIFICATION' ");
+    $stmt -> execute();
+    $nbr_modules_attVerfi = $stmt -> fetchColumn();
+
+    // modules non conforme
+    $stmt = $pdo -> prepare("Select count(*) as modules_validees from attributions_verification 
+        where statut_verification = 'NON_CONFORME' ");
+    $stmt -> execute();
+    $nbr_modules_nonConforme = $stmt -> fetchColumn();
+
+    // table affectation
+    $stmt = $pdo -> prepare("
+        select f.code_filiere as filiere, g.code_groupe as groupe, m.intitule as module,
+            ur.nom as formateur_responsable, uv.nom as formateur_verificateur, av.statut_verification as statut
+        from attributions_module am
+        join groupes g on g.id = am.groupe_id
+        join filieres f on f.id = g.filiere_id
+        join modules m on m.id = am.module_id
+        join utilisateurs ur on ur.id = am.formateur_responsable_id
+        left join attributions_verification av on av.attribution_module_id = am.id
+        LEFT join utilisateurs uv on uv.id = av.formateur_verificateur_id
+        order by av.date_affectation desc
+        limit 4;
+    ");
+    $stmt -> execute();
+    $tabAffectation = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+
+    // status badge
+    function getStatusClass($status) {
+        switch ($status) {
+            case 'NON_DEPOSE':
+                return 'bg-danger';
+            case 'EN_VERIFICATION':
+                return 'bg-warning text-dark';
+            case 'CONFORME':
+                return 'bg-success';
+            case 'NON_CONFORME':
+                return 'bg-dark';
+            default:
+                return 'bg-secondary';
+        }
+    }
+
+
+
 ?>
-
-
 
 
 <!DOCTYPE html>
@@ -150,7 +208,9 @@
                         <div class="card shadow-sm rounded-5 border-opacity-50 border-success p-3 ">
                             <div class="card-body text-center">
                                 <h4 class="text-center mt-3">Modules Valides</h4>
-                                <p class="text-center fs-3 mb-3 text-success">9</p>
+                                <p class="text-center fs-3 mb-3 text-success">
+                                    <?php echo $nbr_modules_valide ?>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -159,7 +219,9 @@
                         <div class="card shadow-sm rounded-5 border-opacity-50 border-primary p-3 ">
                             <div class="card-body text-center">
                                 <h4 class="text-center mt-3">Modules non deposes</h4>
-                                <p class="text-center fs-3 mb-3 text-success">15</p>
+                                <p class="text-center fs-3 mb-3 text-success">
+                                    <?php echo $nbr_modules_nonDepose ?>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -168,7 +230,9 @@
                         <div class="card shadow-sm  rounded-5 border-opacity-50 border-warning pt-1">
                             <div class="card-body text-center">
                                 <h4 class="text-center mt-3">Modules deposes en attente de Verification</h4>
-                                <p class="text-center fs-3 mb-3 text-success">11</p>
+                                <p class="text-center fs-3 mb-3 text-success">
+                                    <?php echo $nbr_modules_attVerfi ?>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -177,7 +241,9 @@
                         <div class="card shadow-sm rounded-5 border-opacity-50 border-danger p-3 ">
                             <div class="card-body text-center">
                                 <h4 class="text-center mt-3">Modules non Conformes</h4>
-                                <p class="text-center fs-3 mb-3 text-success">5</p>
+                                <p class="text-center fs-3 mb-3 text-success">
+                                    <?php echo $nbr_modules_nonConforme ?>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -193,46 +259,34 @@
                     <thead class="table-primary text-center">
                         <tr>
                             <th>Filiere</th>
-                            <th>Module</th>
                             <th>Groupe</th>
+                            <th>Module</th>
                             <th>Formateur Responsable</th>
                             <th>Formateur Verificateur</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody class="text-center">
-                        <tr>
-                            <td>DEV</td>
-                            <td>HTML</td>
-                            <td>101</td>
-                            <td>Ahmed</td>
-                            <td>Bob</td>
-                            <td><span class="badge bg-success text-dark">Depose</span></td>
-                        </tr>
-                        <tr>
-                            <td>DEV</td>
-                            <td>HTML</td>
-                            <td>101</td>
-                            <td>Ahmed</td>
-                            <td>Bob</td>
-                            <td><span class="badge bg-primary text-dark">En attente</span></td>
-                        </tr>
-                        <tr>
-                            <td>DEV</td>
-                            <td>HTML</td>
-                            <td>101</td>
-                            <td>Ahmed</td>
-                            <td>Bob</td>
-                            <td><span class="badge bg-warning text-dark">En cours</span></td>
-                        </tr>
-                        <tr>
-                            <td>DEV</td>
-                            <td>HTML</td>
-                            <td>101</td>
-                            <td>Ahmed</td>
-                            <td>Bob</td>
-                            <td><span class="badge bg-danger text-dark">non deposes</span></td>
-                        </tr>
+                        <?php if(!empty($tabAffectation)) : ?>
+                            <?php foreach($tabAffectation as $t) : ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($t['filiere']) ?></td>
+                                    <td><?= htmlspecialchars($t['groupe']) ?></td>
+                                    <td><?= htmlspecialchars($t['module']) ?></td>
+                                    <td><?= htmlspecialchars($t['formateur_responsable']) ?></td>
+                                    <td><?= htmlspecialchars($t['formateur_verificateur']) ?></td>
+                                    <td>
+                                        <span class="badge <?= getStatusClass($t['statut']) ?>">
+                                            <?= htmlspecialchars($t['statut']) ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <tr>
+                                <td colspan='6'>Aucun data trouve</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
                 <button class="btn btn-primary ms-2">Export</button>

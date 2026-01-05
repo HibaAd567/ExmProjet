@@ -169,6 +169,7 @@
             transition: width 0.4s ease;
         }
 
+
         .notifications-panel {
             width: 0;
             overflow: hidden;
@@ -255,36 +256,38 @@
             <div class="row p-4 mt-4">
                 <div class="col-12 border shadow-sm rounded-4  p-3"> 
                     <h3 class="pb-3">Affectation </h3>
-                    <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
-                        <thead class="table-primary text-center">
-                            <tr>
-                                <th>Groupe</th>
-                                <th>Module</th>
-                                <th>Formateur Responsable</th>
-                                <th>Formateur Verificateur</th>
-                                <th>Annee</th>
-                                <th>Semestre</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-center">
-                            <?php if(!empty($tabAff)) : ?>
-                                <?php foreach ($tabAff as $t) : ?>
-                                    <tr>
-                                        <td> <?= htmlspecialchars($t['groupe']) ?></td>
-                                        <td> <?= htmlspecialchars($t['module']) ?></td>
-                                        <td> <?= htmlspecialchars($t['formateur_responsable']) ?></td>
-                                        <td> <?= htmlspecialchars($t['formateur_verificateur']) ?></td>
-                                        <td> <?= htmlspecialchars($t['annee']) ?></td>
-                                        <td> <?= htmlspecialchars($t['semestre']) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else : ?>
+                    <div class="table-container">
+                        <table class="table table-hover table-bordered table-striped align-middle shadow-sm rounded-4 overflow-hidden">
+                            <thead class="table-primary text-center">
                                 <tr>
-                                    <td colspan='4'>Aucun data Trouve</td>
+                                    <th>Groupe</th>
+                                    <th>Module</th>
+                                    <th>Formateur Responsable</th>
+                                    <th>Formateur Verificateur</th>
+                                    <th>Annee</th>
+                                    <th>Semestre</th>
                                 </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="text-center">
+                                <?php if(!empty($tabAff)) : ?>
+                                    <?php foreach ($tabAff as $t) : ?>
+                                        <tr>
+                                            <td> <?= htmlspecialchars($t['groupe']) ?></td>
+                                            <td> <?= htmlspecialchars($t['module']) ?></td>
+                                            <td> <?= htmlspecialchars($t['formateur_responsable']) ?></td>
+                                            <td> <?= htmlspecialchars($t['formateur_verificateur']) ?></td>
+                                            <td> <?= htmlspecialchars($t['annee']) ?></td>
+                                            <td> <?= htmlspecialchars($t['semestre']) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <tr>
+                                        <td colspan='6'>Aucun data Trouve</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
                     <button type="button" class="float-end btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#affecter_form" >Affecter </button>
                 </div>
             </div>    
