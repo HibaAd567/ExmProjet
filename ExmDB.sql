@@ -71,7 +71,6 @@ CREATE TABLE attributions_verification (
 );
 
 
-
 CREATE TABLE dossiers_examens (
     id INT AUTO_INCREMENT PRIMARY KEY,
     attribution_verification_id INT NOT NULL,
@@ -201,5 +200,6 @@ select * from attributions_module;
 select * from attributions_verification;
 
 
-
+        
+        
 

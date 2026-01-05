@@ -46,8 +46,8 @@
         join modules m on m.id = am.module_id
         join utilisateurs ur on ur.id = am.formateur_responsable_id
         left join attributions_verification av on av.attribution_module_id = am.id
-        LEFT join utilisateurs uv on uv.id = av.formateur_verificateur_id
-        order by av.date_affectation desc
+        left join utilisateurs uv on uv.id = av.formateur_verificateur_id
+        order by am.id desc
         limit 4;
     ");
     $stmt -> execute();
@@ -57,6 +57,8 @@
     // status badge
     function getStatusClass($status) {
         switch ($status) {
+            case 'DEPOSE':
+                return 'bg-success';
             case 'NON_DEPOSE':
                 return 'bg-danger';
             case 'EN_VERIFICATION':
