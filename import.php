@@ -1,55 +1,56 @@
 <?php
-require 'vendor/autoload.php';
+    require 'vendor/autoload.php';
 
-use PhpOffice\PhpSpreadsheet\IOFactory;
+    use PhpOffice\PhpSpreadsheet\IOFactory;
 
-include 'connexion.php'; // your PDO connection
+    include 'connexion.php';
 
-try {
-    $spreadsheet = IOFactory::load('Base plate Modules.csv');
-    $worksheet = $spreadsheet->getActiveSheet();
+    try {
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    foreach ($worksheet->getRowIterator(2) as $row) {
-        $cells = $row->getCellIterator();
-        $cells->setIterateOnlyExistingCells(false);
+        $spreadsheet = IOFactory::load('Base plate Modules.csv');
+        $worksheet = $spreadsheet->getActiveSheet();
 
-        $data = [];
-        foreach ($cells as $cell) {
-            $data[] = trim($cell->getValue() ?? '');
+        foreach ($worksheet->getRowIterator(2) as $row) {
+            $cells = $row->getCellIterator();
+            $cells->setIterateOnlyExistingCells(false);
+
+            $data = [];
+            foreach ($cells as $cell) {
+                $data[] = trim($cell->getValue() ?? '');
+            }
+
+            $codeFiliere = $data[6];          
+            $filiere = $data[7];             
+            $secteur = $data[5];             
+            $niveau = $data[3];              
+            $typeFormation = $data[4];        
+            $annee = $data[2];                
+            $codeGroupe = $data[9];           
+            $codeModule = $data[10];          
+            $module = $data[11];             
+            $stmt = $pdo->prepare("SELECT id FROM filieres WHERE code_filiere = ?");
+            $stmt->execute([$codeFiliere]);
+            if ($stmt->rowCount() == 0) {
+                $insertFiliere = $pdo->prepare("INSERT INTO filieres (code_filiere, intitule, secteur, niveau, type_formation) VALUES (?, ?, ?, ?, ?)");
+                $insertFiliere->execute([$codeFiliere, $filiere, $secteur, $niveau, $typeFormation]);
+            }
+
+            $stmtGroupe = $pdo->prepare("CALL insert_groupe(?, ?, ?)");
+            $stmtGroupe->execute([$codeFiliere, $codeGroupe, $annee]);
+            while ($stmtGroupe->nextRowset()) {}
+
+            $stmtModule = $pdo->prepare("CALL insert_module(?, ?, ?, ?)");
+            $stmtModule->execute([$codeFiliere, $codeModule, $module, 0]);
+            while ($stmtModule->nextRowset()) {}
+
         }
 
-        $codeFiliere   = $data[6] ?? '';
-        $filiere       = $data[7] ?? '';
-        $secteur       = $data[5] ?? '';
-        $niveau        = $data[3] ?? 'TS'; // default to 'TS' if empty
-        if (empty($niveau)) {
-            $niveau = 'TS';
-        }
-        $typeFormation = $data[4] ?? '';
+        echo "Import completed successfully.";
 
-        if (!$codeFiliere || !$filiere) {
-            // Skip invalid rows with no code or name
-            continue;
-        }
-
-        // Check if filiere exists
-        $stmt = $pdo->prepare("SELECT id FROM filieres WHERE code_filiere = ?");
-        $stmt->execute([$codeFiliere]);
-        $filiereId = $stmt->fetchColumn();
-
-        if (!$filiereId) {
-            $insertFiliere = $pdo->prepare(
-                "INSERT INTO filieres (code_filiere, intitule, secteur, niveau, type_formation) VALUES (?, ?, ?, ?, ?)"
-            );
-            $insertFiliere->execute([$codeFiliere, $filiere, $secteur, $niveau, $typeFormation]);
-            echo "Inserted filiere: $codeFiliere - $filiere\n";
-        } else {
-            echo "Filiere already exists: $codeFiliere\n";
-        }
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
     }
 
-    echo "Filiere import done.\n";
-
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
-}
+?>
