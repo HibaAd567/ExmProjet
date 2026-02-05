@@ -119,36 +119,6 @@
             overflow: scroll;
         }
 
-        .notifications-panel {
-            width: 0;
-            overflow: hidden;
-            background: rgba(253, 81, 81, 1);
-            padding: 0px;
-            margin: 20px;
-            transition: width 0.4s ease, padding 0.4 ease;
-            border-radius: 60px;
-            color: rgba(243, 214, 214, 1);
-        }
-
-        .main-content {
-            width: 100%;
-            transition: width 0.4s ease;
-        }
-
-        .dashboard-w {
-            display: flex;
-            width: 100%;
-            transition: all 0.4s ease;
-        }
-
-        .dashboard-w.show-notifications .main-content {
-            width: 70%;
-        }
-
-        .dashboard-w.show-notifications .notifications-panel {
-            width: 30%;
-            padding: 20px;
-        }
 
 
     </style>
@@ -166,10 +136,6 @@
 
             <!-- right side -->
             <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
-                <li class="nav-item"> 
-                    <!-- notification bell -->
-                    <i id="bell" class="fa-solid fa-bell fa-xl"></i> 
-                </li>
                 <li class="nav-item"> 
                     <div class="name">
                         <span class="border border-primary rounded-4 p-2 m-2"> 
@@ -205,8 +171,8 @@
         </li>
     </ul>
 
-    <div id="dashboard" class="dashboard-w">
-        <div class="main-content">
+    <div>
+        <div>
                     
             <!--TABLE FILIERE-->
             <div class="row p-4 mt-4">
@@ -469,31 +435,6 @@
                 </div>
             </div>
         </div>
-        <!-- NOTIFICATIONS -->
-        <div class="notifications-panel">
-            <h4 class="mb-4 text-center">Notifications </h4>
-            <div class="aLert alert-primary">New module</div>
-            <div class="aLert alert-warning">new .......</div>
-            <div class="aLert alert-danger">....... .......</div>
-        </div>
     </div>
-
-
-
-
-
-    
-
-        
-
-
-   <script>
-        const bell = document.getElementById("bell");
-        const dashboard  = document.getElementById("dashboard");
-
-        bell.addEventListener("click", () => {
-            dashboard.classList.toggle("show-notifications");
-        });
-   </script>
 </body>
 </html>
